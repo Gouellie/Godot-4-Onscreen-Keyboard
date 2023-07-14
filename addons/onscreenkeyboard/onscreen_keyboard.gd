@@ -1,4 +1,4 @@
-tool
+@tool
 extends PanelContainer
 
 
@@ -6,17 +6,18 @@ extends PanelContainer
 ## SETTINGS
 ###########################
 
-export (bool) var autoShow = true
-export (String, FILE, "*.json") var customLayoutFile = null
-export (StyleBoxFlat) var styleBackground = null
-export (StyleBoxFlat) var styleHover = null
-export (StyleBoxFlat) var stylePressed = null
-export (StyleBoxFlat) var styleNormal = null
-export (StyleBoxFlat) var styleSpecialKeys = null
-export (DynamicFont) var font = null
-export (Color) var fontColor = Color(1,1,1)
-export (Color) var fontColorHover = Color(1,1,1)
-export (Color) var fontColorPressed = Color(1,1,1)
+@export var autoShow :bool= true
+@export_file("*.json") var customLayoutFile = null
+@export var styleBackground :StyleBoxFlat= null
+@export var styleHover :StyleBoxFlat= null
+@export var stylePressed :StyleBoxFlat= null
+@export var styleNormal :StyleBoxFlat= null
+@export var styleSpecialKeys :StyleBoxFlat= null
+@export var font :FontFile= null
+@export var fontColor :Color= Color(1,1,1)
+@export var fontColorHover :Color= Color(1,1,1)
+@export var fontColorPressed :Color= Color(1,1,1)
+
 
 ###########################
 ## SIGNALS
@@ -30,7 +31,7 @@ signal layoutChanged
 ###########################
 
 func _enter_tree():
-	get_tree().get_root().connect("size_changed", self, "size_changed")
+	get_tree().get_root().size_changed.connect(size_changed)
 	_initKeyboard()
 
 #func _exit_tree():
@@ -58,7 +59,7 @@ var keys = []
 var capslockKeys = []
 var uppercase = false
 
-var tweenPosition
+#var tweenPosition : Tween
 var tweenSpeed = .2
 
 func _initKeyboard():
@@ -69,11 +70,9 @@ func _initKeyboard():
 	else:
 		_createKeyboard(_loadJSON(customLayoutFile))
 	
-	tweenPosition = Tween.new()
-	add_child(tweenPosition)
-	
 	if autoShow:
 		_hideKeyboard()
+
 
 
 ###########################
@@ -97,11 +96,12 @@ func _updateAutoDisplayOnInput(event):
 		released = !released
 		if released == false:
 			return
-		
-		var focusObject = get_focus_owner()
+
+		var focusObject = null
+#		var focusObject = get_focus_owner()
 		if focusObject != null:
-			var clickOnInput = Rect2(focusObject.rect_global_position,focusObject.rect_size).has_point(get_global_mouse_position())
-			var clickOnKeyboard = Rect2(rect_global_position,rect_size).has_point(get_global_mouse_position())
+			var clickOnInput = Rect2(focusObject.global_position,focusObject.size).has_point(get_global_mouse_position())
+			var clickOnKeyboard = Rect2(global_position,size).has_point(get_global_mouse_position())
 			
 			if clickOnInput:
 				if isKeyboardFocusObject(focusObject):
@@ -110,9 +110,10 @@ func _updateAutoDisplayOnInput(event):
 				_showKeyboard()
 			else:
 				_hideKeyboard()
-					
+
 	if event is InputEventKey:
-		var focusObject = get_focus_owner()
+		var focusObject = null
+#		var focusObject = get_focus_owner()
 		if focusObject != null:
 			if event.scancode == KEY_ENTER:
 				if isKeyboardFocusObjectCompleteOnEnter(focusObject):
@@ -120,17 +121,16 @@ func _updateAutoDisplayOnInput(event):
 
 
 func _hideKeyboard(keyData=null):
-	tweenPosition.interpolate_property(self,"rect_position",rect_position, Vector2(rect_position.x,get_viewport().get_visible_rect().size.y + 10), tweenSpeed, Tween.TRANS_SINE, Tween.EASE_OUT)
-	tweenPosition.start()
-	#grab_focus()
-	
+	var tweenPosition = get_tree().create_tween()
+	tweenPosition.tween_property(self, "position", Vector2(position.x,get_viewport().get_visible_rect().size.y + 10), tweenSpeed).from(position).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
 	_setCapsLock(false)
 	emit_signal("visibilityChanged",false)
 
 
 func _showKeyboard(keyData=null):
-	tweenPosition.interpolate_property(self,"rect_position",rect_position, Vector2(rect_position.x,get_viewport().get_visible_rect().size.y-rect_size.y), tweenSpeed, Tween.TRANS_SINE, Tween.EASE_OUT)
-	tweenPosition.start()
+	var tweenPosition = get_tree().create_tween()	
+	tweenPosition.tween_property(self, "position", Vector2(position.x,get_viewport().get_visible_rect().size.y-size.y), tweenSpeed).from(position).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	emit_signal("visibilityChanged",true)
 
 
@@ -144,7 +144,7 @@ var currentLayout = null
 
 func setActiveLayoutByName(name):
 	for layout in layouts:
-		if layout.hint_tooltip == str(name):
+		if layout.tooltip_text == str(name):
 			_showLayout(layout)
 		else:
 			_hideLayout(layout)
@@ -153,7 +153,6 @@ func setActiveLayoutByName(name):
 func _showLayout(layout):
 	layout.show()
 	currentLayout = layout
-	
 
 
 func _hideLayout(layout):
@@ -174,12 +173,11 @@ func _switchLayout(keyData):
 			return
 	
 	for layout in layouts:
-		if layout.hint_tooltip == keyData.get("layout-name"):
+		if layout.tooltip_text == keyData.get("layout-name"):
 			_showLayout(layout)
 			return
 	
 	_setCapsLock(false)
-	
 	
 
 ###########################
@@ -191,10 +189,10 @@ func _setCapsLock(value):
 	for key in capslockKeys:
 		if value:
 			if key.get_draw_mode() != BaseButton.DRAW_PRESSED:
-				key.pressed = !key.pressed
+				key.button_pressed = !key.button_pressed
 		else:
 			if key.get_draw_mode() == BaseButton.DRAW_PRESSED:
-				key.pressed = !key.pressed
+				key.button_pressed = !key.button_pressed
 				
 	for key in keys:
 		key.changeUppercase(value)
@@ -215,19 +213,19 @@ func _keyReleased(keyData):
 		###########################
 		
 		var inputEventKey = InputEventKey.new()
-		inputEventKey.shift = uppercase
-		inputEventKey.alt = false
-		inputEventKey.meta = false
-		inputEventKey.command = false
+		inputEventKey.shift_pressed = uppercase
+		inputEventKey.alt_pressed = false
+		inputEventKey.meta_pressed = false
+		inputEventKey.command_or_control_autoremap = false
 		inputEventKey.pressed = true
 		
 		var keyUnicode = KeyListHandler.getUnicodeFromString(keyValue)
 		if uppercase==false and KeyListHandler.hasLowercase(keyValue):
 			keyUnicode +=32
 		inputEventKey.unicode = keyUnicode
-		inputEventKey.scancode = KeyListHandler.getScancodeFromString(keyValue)
-		get_tree().input_event(inputEventKey)
-		
+		inputEventKey.keycode = KeyListHandler.getScancodeFromString(keyValue)
+
+		#get_tree().input_event(inputEventKey) # crash : removed in Godot 4.0.
 		
 		###########################
 		## DISABLE CAPSLOCK AFTER 
@@ -266,7 +264,7 @@ func _createKeyboard(layoutData):
 	var index = 0
 	for layout in data.get("layouts"):
 
-		var layoutContainer = PanelContainer.new()
+		var layoutContainer := PanelContainer.new()
 		
 		if styleBackground != null:
 			layoutContainer.set('custom_styles/panel', styleBackground)
@@ -277,7 +275,7 @@ func _createKeyboard(layoutData):
 		else:
 			currentLayout = layoutContainer
 		
-		layoutContainer.hint_tooltip = layout.get("name")
+		layoutContainer.tooltip_text = layout.get("name")
 		layouts.push_back(layoutContainer)
 		add_child(layoutContainer)
 		
@@ -306,21 +304,21 @@ func _createKeyboard(layoutData):
 					newKey.set('custom_colors/font_color_pressed', fontColorPressed)
 					newKey.set('custom_colors/font_color_disabled', fontColor)
 					
-				newKey.connect("released",self,"_keyReleased")
+				newKey.connect("released", _keyReleased)
 				
 				if key.has("type"):
 					if key.get("type") == "switch-layout":
-						newKey.connect("released",self,"_switchLayout")
+						newKey.connect("released", _switchLayout)
 						_setKeyStyle("normal",newKey, styleSpecialKeys)
 					elif key.get("type") == "special":
 						_setKeyStyle("normal",newKey, styleSpecialKeys)
 					elif key.get("type") == "special-shift":
-						newKey.connect("released",self,"_triggerUppercase")
+						newKey.connect("released", _triggerUppercase)
 						newKey.toggle_mode = true
 						capslockKeys.push_back(newKey)
 						_setKeyStyle("normal",newKey, styleSpecialKeys)
 					elif key.get("type") == "special-hide-keyboard":
-						newKey.connect("released",self,"_hideKeyboard")
+						newKey.connect("released", _hideKeyboard)
 						_setKeyStyle("normal",newKey, styleSpecialKeys)
 				
 				# SET ICONS
@@ -363,7 +361,7 @@ func _createKeyboard(layoutData):
 ###########################
 
 func _loadJSON(filePath):
-	var content = JSON.parse(_loadFile(filePath))
+	var content = JSON.parse_string(_loadFile(filePath))
 	
 	if content.error == OK:
 		return content.result
@@ -372,9 +370,9 @@ func _loadJSON(filePath):
 		return null
 
 
-func _loadFile(filePath):
-	var file = File.new()
-	var error = file.open(filePath, file.READ)
+func _loadFile(filePath) -> String:
+	var file = FileAccess.open(filePath, FileAccess.READ)
+	var error = FileAccess.get_open_error()
 	
 	if error != 0:
 		print("Error loading File. Error: "+str(error))

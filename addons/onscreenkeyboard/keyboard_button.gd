@@ -15,13 +15,13 @@ func _ready():
 
 func item_rect_changed():
 	if iconTexRect != null:
-		iconTexRect.rect_size = rect_size
+		iconTexRect.size = size
 	
 func _init(_keyData):
 	keyData = _keyData
-	connect("button_up",self,"button_up")
-	connect("button_down",self,"button_down")
-	connect("item_rect_changed",self,"item_rect_changed")
+	connect("button_up", button_up)
+	connect("button_down", button_down)
+	connect("item_rect_changed", item_rect_changed)
 	
 	size_flags_horizontal = SIZE_EXPAND_FILL
 	size_flags_vertical = SIZE_EXPAND_FILL
