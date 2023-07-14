@@ -222,8 +222,7 @@ func _keyReleased(keyData):
 			keyUnicode +=32
 		inputEventKey.unicode = keyUnicode
 		inputEventKey.keycode = KeyListHandler.getScancodeFromString(keyValue)
-		
-		print(inputEventKey.keycode)
+
 		Input.parse_input_event(inputEventKey)
 		
 		###########################
