@@ -12,8 +12,7 @@ Onscreen Keyboard Plugin for Godot Engine. Displayed as soon as LineEdit or Text
 - add onscreenkeyboard as git submodule into addons or download .zip and add folder manually
  ```
 	cd /path/to/project
-	mkdir -p addons
-	git submodule add https://github.com/Gouellie/Godot-4-Onscreen-Keyboard.git addons/onscreen-keyboard
+	git submodule add https://github.com/Gouellie/Godot-4-Onscreen-Keyboard.git addons/Godot-4-Onscreen-Keyboard
 
 ```
 - activate plugin: Project Settings -> Plugins -> Onscreen Keyboard
