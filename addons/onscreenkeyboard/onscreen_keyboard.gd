@@ -113,7 +113,7 @@ func _updateAutoDisplayOnInput(event):
 	if event is InputEventKey:
 		var focusObject = get_viewport().gui_get_focus_owner()
 		if focusObject != null:
-			if event.scancode == KEY_ENTER:
+			if event.keycode == KEY_ENTER:
 				if isKeyboardFocusObjectCompleteOnEnter(focusObject):
 					_hideKeyboard()
 
@@ -128,7 +128,7 @@ func _hideKeyboard(keyData=null):
 
 func _showKeyboard(keyData=null):
 	var tweenPosition = get_tree().create_tween()	
-	tweenPosition.tween_property(self, "position", Vector2(position.x,get_viewport().get_visible_rect().size.y-size.y), tweenSpeed).from(position).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tweenPosition.tween_property(self, "position", Vector2(position.x,get_viewport().get_visible_rect().size.y-size.y - 10), tweenSpeed).from(position).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	emit_signal("visibilityChanged",true)
 
 
@@ -222,8 +222,9 @@ func _keyReleased(keyData):
 			keyUnicode +=32
 		inputEventKey.unicode = keyUnicode
 		inputEventKey.keycode = KeyListHandler.getScancodeFromString(keyValue)
-
-		#get_tree().input_event(inputEventKey) # crash : removed in Godot 4.0.
+		
+		print(inputEventKey.keycode)
+		Input.parse_input_event(inputEventKey)
 		
 		###########################
 		## DISABLE CAPSLOCK AFTER 
