@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbcwrh7vm641e"
-path="res://.godot/imported/left.png-ad81a8857ba0e01de937a0b8c62a490e.ctex"
+uid="uid://b5w637e68qfc5"
+path="res://.godot/imported/Screenshot.png-6d75f60392b38aabeef07fb803586e80.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/Godot-4-Onscreen-Keyboard/addons/onscreenkeyboard/icons/left.png"
-dest_files=["res://.godot/imported/left.png-ad81a8857ba0e01de937a0b8c62a490e.ctex"]
+source_file="res://addons/Godot-4-Onscreen-Keyboard/addons/onscreenkeyboard/Screenshot.png"
+dest_files=["res://.godot/imported/Screenshot.png-6d75f60392b38aabeef07fb803586e80.ctex"]
 
 [params]
 

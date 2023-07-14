@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmqna2o7gt5jg"
-path="res://.godot/imported/shift.png-2155a58070add20917502fe6933338ef.ctex"
+path="res://.godot/imported/shift.png-9ee4e185d2b5c302bcd6c58c2d57d29d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/onscreenkeyboard/icons/shift.png"
-dest_files=["res://.godot/imported/shift.png-2155a58070add20917502fe6933338ef.ctex"]
+source_file="res://addons/Godot-4-Onscreen-Keyboard/addons/onscreenkeyboard/icons/shift.png"
+dest_files=["res://.godot/imported/shift.png-9ee4e185d2b5c302bcd6c58c2d57d29d.ctex"]
 
 [params]
 
