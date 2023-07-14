@@ -1,6 +1,8 @@
 ![Screenshot](addons/onscreenkeyboard/Screenshot.png "Screenshot")
 
-This is the Godot 4 version of [Godot-Onscreen-Keyboard]([myLib/README.md](https://github.com/martinfuchs/Godot-Onscreen-Keyboard))
+This is the Godot 4 version of [Godot-Onscreen-Keyboard]([myLib/README.md](https://github.com/martinfuchs/Godot-Onscreen-Keyboard)).
+
+All credits goes to [martin fuchs](https://github.com/martinfuchs) 
 
 # Usage
 Onscreen Keyboard Plugin for Godot Engine. Displayed as soon as LineEdit or TextEdit are in focus.
