@@ -96,9 +96,8 @@ func _updateAutoDisplayOnInput(event):
 		released = !released
 		if released == false:
 			return
-
-		var focusObject = null
-#		var focusObject = get_focus_owner()
+		
+		var focusObject = get_viewport().gui_get_focus_owner()
 		if focusObject != null:
 			var clickOnInput = Rect2(focusObject.global_position,focusObject.size).has_point(get_global_mouse_position())
 			var clickOnKeyboard = Rect2(global_position,size).has_point(get_global_mouse_position())
@@ -112,8 +111,7 @@ func _updateAutoDisplayOnInput(event):
 				_hideKeyboard()
 
 	if event is InputEventKey:
-		var focusObject = null
-#		var focusObject = get_focus_owner()
+		var focusObject = get_viewport().gui_get_focus_owner()
 		if focusObject != null:
 			if event.scancode == KEY_ENTER:
 				if isKeyboardFocusObjectCompleteOnEnter(focusObject):
